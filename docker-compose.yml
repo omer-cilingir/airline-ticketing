@@ -1,0 +1,24 @@
+version: '3'
+services:
+
+  ticketing-postgres:
+    image: "postgres:9.6-alpine"
+    container_name: ticketing-postgres
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  ticketing-app:
+    build: .
+    container_name: ticketing-app
+    environment:
+      - DB_SERVER=ticketing-postgres
+    ports:
+      - 8080:8080
+    links:
+      - ticketing-postgres
